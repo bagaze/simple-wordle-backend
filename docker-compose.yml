@@ -1,0 +1,14 @@
+services:
+  simplewordlebackend:
+    image: simplewordlebackend
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+      args:
+        YOUR_ENV: development
+    volumes:
+      - ./src/:/app/src
+      - ./tests/:/app/tests
+    command: uvicorn src.main:app --reload --workers 1 --host 0.0.0.0 --port 9090
+    ports:
+      - 9090:9090
