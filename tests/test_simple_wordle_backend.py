@@ -13,7 +13,7 @@ class TestGlobal:
         assert __version__ == '0.1.0'
 
     def test_todays_word(self):
-        _, word = todays_word(1)
+        _, word = todays_word(2)
         assert word == 'ballerine'
 
 
@@ -37,12 +37,12 @@ class TestAPIConf:
         assert conf.number_of_letters is not None
         assert conf.day_number is not None
 
-        res = client.get(app.url_path_for("confs:get-conf"), params={'day_number': 1})
+        res = client.get(app.url_path_for("confs:get-conf"), params={'day_number': 2})
         assert res.status_code == status.HTTP_200_OK
 
         conf = Conf(**res.json())
         assert conf.number_of_letters == 9
-        assert conf.day_number == 1
+        assert conf.day_number == 2
 
 
 class TestAPITrial:
@@ -66,7 +66,7 @@ class TestAPITrial:
     ):
         res = client.post(
             app.url_path_for("trials:post-trial"),
-            json={'word': trial_word, 'day_number': 1}
+            json={'word': trial_word, 'day_number': 2}
         )
         assert res.status_code == status.HTTP_200_OK
 
@@ -95,6 +95,6 @@ class TestAPITrial:
     ):
         res = client.post(
             app.url_path_for("trials:post-trial"),
-            json={'word': trial_word, 'day_number': 1}
+            json={'word': trial_word, 'day_number': 2}
         )
         assert res.status_code == status_

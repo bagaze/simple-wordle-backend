@@ -1,7 +1,7 @@
 from fastapi.routing import APIRouter
 
-from src.schemas import Conf
 from src.core.deps import todays_word
+from src.schemas import DayNumber, Conf
 
 
 router = APIRouter()
@@ -20,7 +20,7 @@ router = APIRouter()
     response_model=Conf,
 )
 def get_conf(
-    day_number: int | None = None
+    day_number: DayNumber | None = None
 ) -> Conf:
     day_num, word = todays_word(day_number)
     return Conf(day_number=day_num, number_of_letters=len(word))

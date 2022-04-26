@@ -12,7 +12,7 @@ def todays_word(day: int | None = None) -> str:
         word_list = [word.rstrip('\n') for word in f]
         day_num = day if day else datetime.now().timetuple().tm_yday
 
-        return (day_num, word_list[day_num % len(word_list)])
+        return (day_num, word_list[day_num % len(word_list) - 1])
 
 
 def compare_words(*, trial_word: str, todays_word: str) -> list[TrialResponseElem]:
