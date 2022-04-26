@@ -6,7 +6,12 @@ class TrialRequest(BaseModel):
     '''
     Trial input
     '''
-    word: constr(min_length=5, max_length=10)
+    word: constr(
+        min_length=5,
+        max_length=10,
+        regex='^[a-zA-Z]+$'  # noqa: F722
+    )
+    day_number: int | None
 
 
 class StatusEnum(str, Enum):
@@ -15,9 +20,9 @@ class StatusEnum(str, Enum):
     present = 'present'
 
 
-class TrialWordcheckResponse(BaseModel):
+class TrialResponseElem(BaseModel):
     '''
-    Trial Response
+    Trial response element
     '''
     letter: constr(min_length=1, max_length=1)
     status: StatusEnum
