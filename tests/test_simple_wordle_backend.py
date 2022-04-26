@@ -4,7 +4,7 @@ import pytest
 
 from src import __version__
 from src.core.deps import todays_word
-from src.schemas import Conf, StatusEnum, TrialResponseElem
+from src.schemas import Conf, StatusEnum, TrialResponse
 
 
 class TestGlobal:
@@ -70,8 +70,11 @@ class TestAPITrial:
         )
         assert res.status_code == status.HTTP_200_OK
 
-        first_letter_checked = TrialResponseElem(**(res.json()[0]))
-        last_letter_checked = TrialResponseElem(**(res.json()[-1]))
+        trial_response = TrialResponse(**res.json())
+        assert trial_response.day_number == 2
+
+        first_letter_checked = trial_response.results[0]
+        last_letter_checked = trial_response.results[-1]
 
         assert first_letter_checked.letter == trial_word[0]
         assert last_letter_checked.letter == trial_word[-1]

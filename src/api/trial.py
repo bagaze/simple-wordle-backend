@@ -1,6 +1,6 @@
 from fastapi.routing import APIRouter
 
-from src.schemas import TrialRequest, TrialResponseElem
+from src.schemas import TrialRequest, TrialResponse
 from src.core.deps import todays_word, compare_words
 
 
@@ -11,18 +11,20 @@ router = APIRouter()
     "/",
     name="trials:post-trial",
     include_in_schema=False,
-    response_model=list[TrialResponseElem],
+    response_model=TrialResponse,
 )
 @router.post(
     "",
     name="trials:post-trial",
     include_in_schema=True,
-    response_model=list[TrialResponseElem],
+    response_model=TrialResponse,
 )
-def post_trial(
+async def post_trial(
     trial_request: TrialRequest
-) -> list[TrialResponseElem]:
-    return compare_words(
+) -> TrialResponse:
+    day_number, word = todays_word(trial_request.day_number)
+    results = compare_words(
         trial_word=trial_request.word,
-        todays_word=todays_word(trial_request.day_number)[1]
+        todays_word=word
     )
+    return TrialResponse(day_number=day_number, results=results)

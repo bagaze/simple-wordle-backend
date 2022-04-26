@@ -37,6 +37,14 @@ class TrialResponseElem(BaseModel):
     status: StatusEnum
 
 
+class TrialResponse(BaseModel):
+    '''
+    Trial response
+    '''
+    day_number: DayNumber
+    results: list[TrialResponseElem]
+
+
 class Conf(BaseModel):
     '''
     Config of today

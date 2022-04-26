@@ -19,7 +19,7 @@ router = APIRouter()
     include_in_schema=True,
     response_model=Conf,
 )
-def get_conf(
+async def get_conf(
     day_number: DayNumber | None = None
 ) -> Conf:
     day_num, word = todays_word(day_number)
