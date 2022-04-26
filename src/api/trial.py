@@ -24,5 +24,5 @@ def post_trial(
 ) -> list[TrialResponseElem]:
     return compare_words(
         trial_word=trial_request.word,
-        todays_word=todays_word(trial_request.day_number)
+        todays_word=todays_word(trial_request.day_number)[1]
     )

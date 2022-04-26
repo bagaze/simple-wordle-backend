@@ -33,3 +33,4 @@ class Conf(BaseModel):
     Config of today
     '''
     number_of_letters: conint(ge=5, le=10)
+    day_number: int

@@ -22,5 +22,5 @@ router = APIRouter()
 def get_conf(
     day_number: int | None = None
 ) -> Conf:
-    word = todays_word(day_number)
-    return Conf(number_of_letters=len(word))
+    day_num, word = todays_word(day_number)
+    return Conf(day_number=day_num, number_of_letters=len(word))

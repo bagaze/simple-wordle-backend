@@ -3,9 +3,8 @@ from fastapi.testclient import TestClient
 import pytest
 
 from src import __version__
-from src.schemas import Conf
 from src.core.deps import todays_word
-from src.schemas import StatusEnum, TrialResponseElem
+from src.schemas import Conf, StatusEnum, TrialResponseElem
 
 
 class TestGlobal:
@@ -14,7 +13,7 @@ class TestGlobal:
         assert __version__ == '0.1.0'
 
     def test_todays_word(self):
-        word = todays_word(1)
+        _, word = todays_word(1)
         assert word == 'ballerine'
 
 
@@ -36,12 +35,14 @@ class TestAPIConf:
 
         conf = Conf(**res.json())
         assert conf.number_of_letters is not None
+        assert conf.day_number is not None
 
         res = client.get(app.url_path_for("confs:get-conf"), params={'day_number': 1})
         assert res.status_code == status.HTTP_200_OK
 
         conf = Conf(**res.json())
         assert conf.number_of_letters == 9
+        assert conf.day_number == 1
 
 
 class TestAPITrial:
