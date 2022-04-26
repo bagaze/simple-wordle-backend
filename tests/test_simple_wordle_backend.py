@@ -78,8 +78,8 @@ class TestAPITrial:
         first_letter_checked = trial_response.results[0]
         last_letter_checked = trial_response.results[-1]
 
-        assert first_letter_checked.letter == trial_word[0]
-        assert last_letter_checked.letter == trial_word[-1]
+        assert first_letter_checked.letter == trial_word[0].upper()
+        assert last_letter_checked.letter == trial_word[-1].upper()
         assert first_letter_checked.status == first_letter_status
         assert last_letter_checked.status == last_letter_status
 

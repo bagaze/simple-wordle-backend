@@ -28,10 +28,10 @@ def compare_words(*, trial_word: str, todays_word: str) -> list[TrialResponseEle
     res: list[TrialResponseElem] = []
     for (idx, letter) in enumerate(trial_word):
         if letter.upper() == todays_word[idx].upper():
-            res.append(TrialResponseElem(letter=letter, status=LetterStatusEnum.ok))
+            res.append(TrialResponseElem(letter=letter.upper(), status=LetterStatusEnum.ok))
             remaining_letters[idx] = ''
         else:
-            res.append(TrialResponseElem(letter=letter, status=LetterStatusEnum.ko))
+            res.append(TrialResponseElem(letter=letter.upper(), status=LetterStatusEnum.ko))
 
     # For remaining letters, check if there are present in the remaining letters
     for el in filter(

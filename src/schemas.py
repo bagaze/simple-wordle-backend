@@ -38,7 +38,11 @@ class TrialResponseElem(BaseModel):
     '''
     Trial response element
     '''
-    letter: constr(min_length=1, max_length=1)
+    letter: constr(
+        min_length=1,
+        max_length=1,
+        regex='^[A-Z]+$'  # noqa: F722
+    )
     status: LetterStatusEnum
 
 
