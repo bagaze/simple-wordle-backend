@@ -1,8 +1,8 @@
 from datetime import datetime
-from fastapi import status
+from fastapi import status as http_status
 from fastapi.exceptions import HTTPException
 
-from src.schemas import StatusEnum, TrialResponseElem
+from src.schemas import LetterStatusEnum, WordStatusEnum, TrialResponseElem
 
 WORDS_FPATH = './src/data/words.txt'
 
@@ -19,7 +19,7 @@ def compare_words(*, trial_word: str, todays_word: str) -> list[TrialResponseEle
     # First, raise an error of the length of words does not match
     if (len(trial_word) != len(todays_word)):
         raise HTTPException(
-            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            http_status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail='Length of words does not match'
         )
 
@@ -28,21 +28,24 @@ def compare_words(*, trial_word: str, todays_word: str) -> list[TrialResponseEle
     res: list[TrialResponseElem] = []
     for (idx, letter) in enumerate(trial_word):
         if letter.upper() == todays_word[idx].upper():
-            res.append(TrialResponseElem(letter=letter, status=StatusEnum.ok))
+            res.append(TrialResponseElem(letter=letter, status=LetterStatusEnum.ok))
             remaining_letters[idx] = ''
         else:
-            res.append(TrialResponseElem(letter=letter, status=StatusEnum.ko))
+            res.append(TrialResponseElem(letter=letter, status=LetterStatusEnum.ko))
 
     # For remaining letters, check if there are present in the remaining letters
     for el in filter(
-        lambda el: el.status == StatusEnum.ko,
+        lambda el: el.status == LetterStatusEnum.ko,
         res
     ):
         try:
             idx = remaining_letters.index(el.letter.upper())
             remaining_letters[idx] = ''
-            el.status = StatusEnum.present
+            el.status = LetterStatusEnum.present
         except ValueError:
             pass
 
-    return res
+    status = all(el.status == LetterStatusEnum.ok for el in res)
+    status = WordStatusEnum.ok if status else WordStatusEnum.ko
+
+    return status, res

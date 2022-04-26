@@ -23,10 +23,15 @@ class TrialRequest(BaseModel):
     day_number: DayNumber | None
 
 
-class StatusEnum(str, Enum):
+class LetterStatusEnum(str, Enum):
     ok = 'ok'
     ko = 'ko'
     present = 'present'
+
+
+class WordStatusEnum(str, Enum):
+    ok = 'ok'
+    ko = 'ko'
 
 
 class TrialResponseElem(BaseModel):
@@ -34,7 +39,7 @@ class TrialResponseElem(BaseModel):
     Trial response element
     '''
     letter: constr(min_length=1, max_length=1)
-    status: StatusEnum
+    status: LetterStatusEnum
 
 
 class TrialResponse(BaseModel):
@@ -42,6 +47,7 @@ class TrialResponse(BaseModel):
     Trial response
     '''
     day_number: DayNumber
+    status: WordStatusEnum
     results: list[TrialResponseElem]
 
 

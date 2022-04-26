@@ -23,8 +23,8 @@ async def post_trial(
     trial_request: TrialRequest
 ) -> TrialResponse:
     day_number, word = todays_word(trial_request.day_number)
-    results = compare_words(
+    status, results = compare_words(
         trial_word=trial_request.word,
         todays_word=word
     )
-    return TrialResponse(day_number=day_number, results=results)
+    return TrialResponse(day_number=day_number, status=status, results=results)

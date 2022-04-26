@@ -4,7 +4,7 @@ import pytest
 
 from src import __version__
 from src.core.deps import todays_word
-from src.schemas import Conf, StatusEnum, TrialResponse
+from src.schemas import Conf, LetterStatusEnum, TrialResponse, WordStatusEnum
 
 
 class TestGlobal:
@@ -48,12 +48,12 @@ class TestAPIConf:
 class TestAPITrial:
 
     @pytest.mark.parametrize(
-        "trial_word, first_letter_status, last_letter_status",
+        "trial_word, first_letter_status, last_letter_status, word_status",
         (
-            ("ballerine", StatusEnum.ok, StatusEnum.ok),
-            ("ballerina", StatusEnum.ok, StatusEnum.ko),
-            ("calleriny", StatusEnum.ko, StatusEnum.ko),
-            ("acllaeinr", StatusEnum.present, StatusEnum.present)
+            ("ballerine", LetterStatusEnum.ok, LetterStatusEnum.ok, WordStatusEnum.ok),
+            ("ballerina", LetterStatusEnum.ok, LetterStatusEnum.ko, WordStatusEnum.ko),
+            ("calleriny", LetterStatusEnum.ko, LetterStatusEnum.ko, WordStatusEnum.ko),
+            ("acllaeinr", LetterStatusEnum.present, LetterStatusEnum.present, WordStatusEnum.ko)
         ),
     )
     def test_post_trial(
@@ -62,7 +62,8 @@ class TestAPITrial:
         client: TestClient,
         trial_word: str,
         first_letter_status: str,
-        last_letter_status: str
+        last_letter_status: str,
+        word_status: str
     ):
         res = client.post(
             app.url_path_for("trials:post-trial"),
@@ -72,6 +73,7 @@ class TestAPITrial:
 
         trial_response = TrialResponse(**res.json())
         assert trial_response.day_number == 2
+        assert trial_response.status == word_status
 
         first_letter_checked = trial_response.results[0]
         last_letter_checked = trial_response.results[-1]
