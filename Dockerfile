@@ -1,10 +1,6 @@
-FROM python:3.10-slim
+FROM --platform=linux/amd64 python:3.10-slim as python-base
 
-EXPOSE 9090
-
-ARG YOUR_ENV=production
-
-ENV YOUR_ENV=${YOUR_ENV} \
+ENV \
   PYTHONFAULTHANDLER=1 \
   PYTHONDONTWRITEBYTECODE=1 \
   PYTHONUNBUFFERED=1 \
@@ -14,23 +10,34 @@ ENV YOUR_ENV=${YOUR_ENV} \
   PIP_DEFAULT_TIMEOUT=100 \
   POETRY_VERSION=1.1.13
 
-# System deps:
-RUN pip install "poetry==$POETRY_VERSION"
+FROM python-base as requirements-stage
+
+WORKDIR /tmp 
+RUN pip install poetry
+COPY ./pyproject.toml ./poetry.lock* /tmp/
+
+# Generate requirements.txt file
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
+
+FROM python-base as production
 
 # Copy only requirements to cache them in docker layer
 WORKDIR /app
-COPY poetry.lock pyproject.toml /app/
+
+# Install requirements
+COPY --from=requirements-stage /tmp/requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
 # Copy environment information
-COPY ./local-env ./.env
-COPY ./pytest.ini ./pytest.ini
+COPY ./local-env /app/.env
 
 # Creating folders, and files for a project:
 COPY ./src /app/src
 
-# Project initialization:
-RUN poetry config virtualenvs.create false \
-  && poetry install $(test "$YOUR_ENV" == production && echo "--no-dev") --no-interaction --no-ansi
+# Setup a non-root user to run the app
+RUN useradd -m myuser
+USER myuser
 
 # Launch the application
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "9090"]
+# CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "9090"]
+CMD gunicorn src.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT

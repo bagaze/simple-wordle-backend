@@ -3,7 +3,7 @@ services:
     image: simplewordlebackend
     build:
       context: ./
-      dockerfile: ./Dockerfile
+      dockerfile: ./Dockerfile.dev
       args:
         YOUR_ENV: development
     volumes:
