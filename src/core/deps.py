@@ -1,4 +1,5 @@
 from datetime import datetime
+from pytz import timezone
 from fastapi import status as http_status
 from fastapi.exceptions import HTTPException
 
@@ -10,7 +11,7 @@ WORDS_FPATH = './src/data/words.txt'
 def todays_word(day: int | None = None) -> str:
     with open(WORDS_FPATH, 'r') as f:
         word_list = [word.rstrip('\n') for word in f]
-        day_num = day if day else datetime.now().timetuple().tm_yday
+        day_num = day if day else datetime.now(timezone('Europe/Paris')).timetuple().tm_yday
 
         return (day_num, word_list[day_num % len(word_list)])
 
